@@ -3,24 +3,17 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
 import Home from './Pages/Home/Home';
 import Header from './Pages/Header/Header';
-import Footer from './Pages/Footer/Footer';
-import ProductItems from './Pages/ProductItems/ProductItems';
 import LoginPage from './Pages/SignIn/SignIn';
 import RegisterPage from './Pages/SignUp/SignUp';
-import CartPage from './Pages/CartPage/CartPage';
 import OrderPage from './Pages/OrderPage/OrderPage';
-import AddressPage from './Pages/AddressPage/AddressPage';
 import PaymentMethod from './Pages/PaymentMethod/PaymentMethod';
 import PlaceOrder from './Pages/PlaceOrder/PlaceOrder';
-import OrderHistory from './Pages/OrderHistory/OrderHistory';
 import ProfilePage from './Pages/ProfilePage/ProfilePage';
 import SearchPage from './Pages/SearchPage/SearchPage';
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute';
 import Dashboard from './Pages/Dashboard/Dashboard';
 import AdminRoute from './Components/AdminRoute/AdminRoute';
 import ProductListPage from './Pages/ProductListPage/ProductListPage';
-import ProductEditPage from './Pages/ProductEditPage/ProductEditPage';
-import OrderListPage from './Pages/OrderListPage/OrderListPage';
 import UserListPage from './Pages/UserListPage/UserListPage';
 import UserEditPage from './Pages/UserEditPage/UserEditPage';
 import SellerRoute from './Components/SellerRoute/SellerRoute';
@@ -42,22 +35,22 @@ function App() {
             <>
               <Header />
               <Home />
-              <Footer />
+               
             </>
           }
         />
 
-        <Route
+        {/* <Route
           path="/products/:url"
           element={
             <>
               <Header />
               <ProductItems />
-              <Footer />
+               
             </>
           }
-        />
-        <Route
+        /> */}
+        {/* <Route
           path="/cart"
           element={
             <>
@@ -65,11 +58,11 @@ function App() {
               <CartPage />
             </>
           }
-        />
+        /> */}
         <Route path="/signin" element={<LoginPage />} />
         <Route path="/signup" element={<RegisterPage />} />
 
-        <Route
+        {/* <Route
           path="/shipping"
           element={
             <>
@@ -77,7 +70,7 @@ function App() {
               <AddressPage />
             </>
           }
-        />
+        /> */}
         <Route
           path="/payment"
           element={
@@ -106,12 +99,12 @@ function App() {
               <ProtectedRoute>
                 <OrderPage />
               </ProtectedRoute>
-              <Footer />
+               
             </>
           }
         />
 
-        <Route
+        {/* <Route
           path="/orderhistory"
           element={
             <>
@@ -121,7 +114,7 @@ function App() {
               </ProtectedRoute>
             </>
           }
-        />
+        /> */}
 
         <Route
           path="/profile"
@@ -131,7 +124,7 @@ function App() {
               <ProtectedRoute>
                 <ProfilePage />
               </ProtectedRoute>
-              <Footer />
+               
             </>
           }
         />
@@ -142,7 +135,7 @@ function App() {
             <>
               <Header />
               <SearchPage />
-              <Footer />
+               
             </>
           }
         />
@@ -156,7 +149,7 @@ function App() {
               <AdminRoute>
                 <Dashboard />
               </AdminRoute>
-              <Footer />
+               
             </>
           }
         />
@@ -169,13 +162,13 @@ function App() {
               <AdminRoute>
                 <ProductListPage />
               </AdminRoute>
-              <Footer />
+               
             </>
           }
           exact
         />
 
-        <Route
+        {/* <Route
           path="/admin/product/:id"
           element={
             <>
@@ -185,9 +178,9 @@ function App() {
               </AdminRoute>
             </>
           }
-        />
+        /> */}
 
-        <Route
+        {/* <Route
           path="/admin/orders"
           element={
             <>
@@ -198,7 +191,7 @@ function App() {
             </>
           }
           exact
-        />
+        /> */}
 
         <Route
           path="/admin/users"
@@ -220,7 +213,7 @@ function App() {
               <AdminRoute>
                 <UserEditPage />
               </AdminRoute>
-              <Footer />
+               
             </>
           }
         />
@@ -238,7 +231,7 @@ function App() {
           }
         />
 
-        <Route
+        {/* <Route
           path="/seller/orders"
           element={
             <>
@@ -248,7 +241,7 @@ function App() {
               </SellerRoute>
             </>
           }
-        />
+        /> */}
 
         <Route
           path="/auction"
@@ -276,7 +269,7 @@ function App() {
             <>
               <Header />
               <AuctionDetail />
-              <Footer />
+               
             </>
           }
         />

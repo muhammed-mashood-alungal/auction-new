@@ -129,21 +129,6 @@ export default function Navbar() {
               </span>
             </Link>
 
-            <Link to="/cart" className="relative inline-flex items-center mr-6">
-              <span className="relative inline-flex items-center rounded px-2.5 py-1.5 font-medium">
-                {cart.cartItems.length > 0 && (
-                  <span className="absolute -top-1 -right-2 h-5 w-5 rounded-full bg-red-500 flex justify-center text-white text-xs items-center">
-                    <span>
-                      {cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
-                    </span>
-                  </span>
-                )}
-                <span className="ml-1.5 text-base text-gray-600 hover:text-gray-900">
-                  Cart
-                </span>
-              </span>
-            </Link>
-
             {userInfo && userInfo.isSeller && (
               <div className="mr-4">
                 <button
@@ -174,22 +159,7 @@ export default function Navbar() {
                       className="py-2 text-sm text-gray-700"
                       aria-labelledby="dropdownUserAvatarButton"
                     >
-                      <li>
-                        <Link
-                          to="/seller/products"
-                          className="block px-4 py-2 hover:bg-gray-100"
-                        >
-                          Products
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/seller/orders"
-                          className="block px-4 py-2 hover:bg-gray-100"
-                        >
-                          Orders
-                        </Link>
-                      </li>
+                      
                     </ul>
                   </div>
                 )}
@@ -220,35 +190,7 @@ export default function Navbar() {
                         {userInfo.email}
                       </div>
                     </div>
-                    <ul
-                      className="py-2 text-sm text-gray-700"
-                      aria-labelledby="dropdownUserAvatarButton"
-                    >
-                      <li>
-                        <Link
-                          to="/admin/dashboard"
-                          className="block px-4 py-2 hover:bg-gray-100"
-                        >
-                          Dashboard
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/admin/products"
-                          className="block px-4 py-2 hover:bg-gray-100"
-                        >
-                          Products
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/admin/orders"
-                          className="block px-4 py-2 hover:bg-gray-100"
-                        >
-                          Orders
-                        </Link>
-                      </li>
-                    </ul>
+                  
                     <div className="py-2">
                       <Link
                         to="/admin/users"
@@ -297,14 +239,6 @@ export default function Navbar() {
                           className="block px-4 py-2 hover:bg-gray-100"
                         >
                           Profile
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/orderhistory"
-                          className="block px-4 py-2 hover:bg-gray-100"
-                        >
-                          Your Orders
                         </Link>
                       </li>
                     </ul>
