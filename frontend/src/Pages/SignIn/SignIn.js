@@ -32,7 +32,7 @@ function LoginPage() {
       });
       ctxDispatch({ type: 'USER_SIGNIN', payload: data });
       localStorage.setItem('userInfo', JSON.stringify(data));
-      navigate(redirect || '/');
+      navigate('/auction');
     } catch (err) {
       toast.error(getError(err));
     }
@@ -52,7 +52,7 @@ function LoginPage() {
       </Helmet>
 
       <h2 className="absolute top-[5%] right-[5%] text-3xl font-bold">
-        <Link to={'/'}>
+        <Link to={'/auction'}>
           <i className="fas fa-times text-cyan-500 hover:animate-pulse delay-500"></i>
         </Link>
       </h2>
@@ -104,12 +104,7 @@ function LoginPage() {
             >
               New Customer?
             </Link>
-            <Link
-              to="/"
-              className="self-end py-4 mt-4 ml-4 text-gray-600 font-bold opacity-75 hover:opacity-100 transition-all duration-500"
-            >
-              Forgot password?
-            </Link>
+            
           </div>
           <button
             type="submit"

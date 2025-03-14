@@ -16,6 +16,9 @@ const auctionSchema = new mongoose.Schema(
     endDate: { type: Date, required: true },
     bids: [bidSchema],
     winner: { type: String },
+    seller : {type : mongoose.Types.ObjectId , required : true},
+    isOrderPlaced: {type : Boolean , default : false},
+    isDeleted : {type : Boolean , default : false}
   },
   {
     timestamps: true,

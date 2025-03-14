@@ -1,5 +1,5 @@
 import { useContext, useEffect, useReducer, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import io from 'socket.io-client';
@@ -32,7 +32,7 @@ const AuctionDetail = () => {
   const [auction, setAuction] = useState(null);
   const [bid, setBid] = useState('');
   const [socket, setSocket] = useState(null);
-
+  const navigate = useNavigate()
   const {
     state: { userInfo },
   } = useContext(Store);
@@ -54,10 +54,9 @@ const AuctionDetail = () => {
       }
     };
     fetchData();
-
-    const newSocket = io(process.env.REACT_APP_API_PROXY);
+    const newSocket = io(process.env.REACT_APP_API_PROXY || 'http://localhost:5000');
     setSocket(newSocket);
-
+    console.log(newSocket)
     return () => {
       newSocket.disconnect();
     };
@@ -73,6 +72,11 @@ const AuctionDetail = () => {
 
   const handleSubmit = async (event, userName) => {
     event.preventDefault();
+    console.log('Hello')
+    console.log(auction)
+    if (auction.currentBid >= bid) {
+      return toast.error('Please Provide a Higher Bid')
+    }
     const response = await axios.post(
       `/api/auctions/${id}/bids`,
       {
@@ -96,10 +100,15 @@ const AuctionDetail = () => {
 
   const handleBidChange = (event) => {
     const value = event.target.value;
+    console.log(value)
     if (/^\d*\.?\d*$/.test(value)) {
       setBid(value);
     }
   };
+
+  const placeOrder = (event) => {
+    navigate('/placeorder', { state: auction })
+  }
 
   return (
     <div>
@@ -109,7 +118,7 @@ const AuctionDetail = () => {
         <ErrorPage />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Image of product */}
+          {/* Image of product */} 
           <div className="w-full p-4">
             <img
               src={auction.imageUrl}
@@ -157,10 +166,20 @@ const AuctionDetail = () => {
                   <div className="border-b border-gray-200 py-2">
                     <p className="text-lg font-semibold">
                       {auction.bids[auction.bids.length - 1]?.bidder ===
-                      userInfo.name ? (
-                        <button className="w-full py-2 px-4 bg-green-500 hover:bg-green-600 text-white duration-200 rounded-md mt-4">
-                          ADD TO CART
-                        </button>
+                        userInfo.name ? (
+                         !auction.isOrderPlaced ? 
+                          (
+                            <button onClick={placeOrder} className="w-full py-2 px-4 bg-green-500 hover:bg-green-600 text-white duration-200 rounded-md mt-4">
+                            Place Order
+                          </button>
+                          ) : (
+                            <button  disabled={true} className="w-full py-2 px-4 bg-gray-500 text-white duration-200 rounded-md mt-4">
+                            You Already Ordered This Product
+                          </button>
+                          )
+
+                         
+                       
                       ) : (
                         <button
                           className="w-full py-2 px-4 cursor-not-allowed bg-gray-100 text-gray-400 duration-200 rounded-md mt-4"
@@ -173,7 +192,7 @@ const AuctionDetail = () => {
                   </div>
                 )}
               </>
-            ) : auction.bids[auction.bids.length - 1]?.bidder ===
+            ) : auction.bids.reverse()[0]?.bidder ===
               userInfo.name ? (
               <button className="inline-block px-6 py-2 w-full leading-5 font-semibold rounded-lg text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 cursor-default">
                 You have the highest bid 🎉
@@ -212,7 +231,7 @@ const AuctionDetail = () => {
             {auction.bids.length > 0 && (
               <div className="border-b border-gray-200 py-2 mt-4">
                 <h3 className="text-lg font-bold mb-2">Bids History:</h3>
-                {auction.bids.map((bid, index) => (
+                {auction?.bids?.reverse().map((bid, index) => (
                   <div key={index} className="flex justify-between mb-2">
                     <p className="text-gray-500 text-sm">{bid.bidder}</p>
                     <p className="text-gray-500 text-sm">

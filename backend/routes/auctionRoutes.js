@@ -7,8 +7,8 @@ const auctionRouter = express.Router();
 
 auctionRouter.post('/', isSeller, async (req, res) => {
   try {
-    const { title, description, startingBid, imageUrl, endDate } = req.body;
-
+    const { title, description, startingBid, imageUrl, endDate  , seller} = req.body;
+     console.log(seller)
     const newAuction = new Auction({
       title,
       description,
@@ -16,6 +16,7 @@ auctionRouter.post('/', isSeller, async (req, res) => {
       currentBid: startingBid,
       imageUrl,
       endDate,
+      seller
     });
 
     const createdAuction = await newAuction.save();
@@ -30,7 +31,7 @@ auctionRouter.post('/', isSeller, async (req, res) => {
 
 auctionRouter.get('/', async (req, res) => {
   try {
-    const auctions = await Auction.find({});
+    const auctions = await Auction.find({isDeleted :false});
     res.json(auctions);
   } catch (error) {
     console.error(error);
@@ -75,7 +76,7 @@ auctionRouter.post('/:id/bids', async (req, res) => {
     auction.bids.push({ bidder: bidder, bidAmount: bidAmount });
     auction.currentBid = bidAmount;
     auction.bids.bidder = bidder;
-
+     
     const updatedAuction = await auction.save();
     io.emit('bid', updatedAuction); // emit the 'bid' event with the updated auction
     res.json(updatedAuction);
@@ -88,7 +89,9 @@ auctionRouter.post('/:id/bids', async (req, res) => {
 // DELETE auction by ID
 auctionRouter.delete('/:id', isAuth, isAdmin, async (req, res) => {
   try {
-    const auction = await Auction.findByIdAndDelete(req.params.id);
+    const auction = await Auction.findById(req.params.id);
+    auction.isDeleted = true
+    await auction.save()
     if (!auction) {
       return res.status(404).send({ error: 'Auction not found' });
     }

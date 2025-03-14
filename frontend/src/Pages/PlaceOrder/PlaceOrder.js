@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useReducer } from 'react';
+import React, { useContext, useEffect, useReducer, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import CheckoutSteps from '../../Components/CheckoutSteps/CheckoutSteps';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
@@ -26,6 +26,17 @@ const reducer = (state, action) => {
 
 export default function PlaceOrder() {
   const navigate = useNavigate();
+  const [shippingAddress, setShippingAddress] = useState({
+    fullName: '',
+    address: '',
+    pinCode: '',
+    city: '',
+    country: ''
+  })
+  const [isAddressEditing , setAddressEditing] = useState(true)
+  const location = useLocation();
+  const auction = location.state
+  console.log(auction)
   const [{ loading }, dispatch] = useReducer(reducer, {
     loading: false,
   });
@@ -42,19 +53,50 @@ export default function PlaceOrder() {
   cart.taxPrice = round2(0.15 * cart.itemsPrice);
   cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice;
 
+  const validateAddress=()=>{
+    if(shippingAddress.address.trim() == ""){
+      toast.error("Please Provide a Address")
+      return false
+    }
+    if(shippingAddress.city.trim() == ""){
+      toast.error("Please Provide a City")
+      return false
+    }
+    if(shippingAddress.country.trim() == ""){
+      toast.error("Please Provide a Country")
+      return false
+    }
+    if(shippingAddress.fullName.trim() == ""){
+      toast.error("Please Provide a Full Name")
+      return false
+    }
+    if(shippingAddress.pinCode.trim() == ""){
+      toast.error("Please Provide a pin Code")
+      return false
+    }
+    if(isAddressEditing){
+      toast.error("Please Click Ok to Cofirm Your Address")
+      return false
+    }
+    return true
+  }
   const placeOrderHandler = async () => {
     try {
+      console.log('asdfasfd')
+      
+      if(!validateAddress()) return
+      console.log('asdfasfd')
       dispatch({ type: 'CREATE_REQUEST' });
       const { data } = await axios.post(
         '/api/orders',
         {
           orderItems: cart.cartItems,
-          shippingAddress: cart.shippingAddress,
-          paymentMethod: cart.paymentMethod,
-          itemsPrice: cart.itemsPrice,
-          shippingPrice: cart.shippingPrice,
-          taxPrice: cart.taxPrice,
-          totalPrice: cart.totalPrice,
+          shippingAddress: shippingAddress,
+          itemPrice:auction.bids[auction.bids.length - 1]?.bidAmount,
+          shippingPrice: 100,
+          totalPrice: auction.bids[auction.bids.length - 1]?.bidAmount + 100,
+          user: userInfo._id,
+          auctionId:auction._id
         },
         {
           headers: {
@@ -72,11 +114,21 @@ export default function PlaceOrder() {
     }
   };
 
-  useEffect(() => {
-    if (!cart.paymentMethod) {
-      navigate('/payment');
-    }
-  }, [cart, navigate]);
+  // useEffect(() => {
+  //   if (!cart.paymentMethod) {
+  //     navigate('/payment');
+  //   }
+  // }, [cart, navigate]);
+
+  const handleAddressChange = (e) => {
+    const key = e.target.name
+    const value = e.target.value
+
+    console.log(key ," " , value)
+    setShippingAddress(address =>{
+      return {...address , [key] : value}
+    }) 
+  }
   return (
     <div className="areas">
       <ul className="circless">
@@ -110,23 +162,32 @@ export default function PlaceOrder() {
               </h2>
               <p className="text-gray-700 mb-2">
                 <strong>Name: </strong>
-                {cart.shippingAddress.fullName}{' '}
+                <input value={shippingAddress.fullName} onChange={handleAddressChange} name='fullName'  disabled={!isAddressEditing}/>
               </p>
               <p className="text-gray-700 mb-4">
-                <strong>Address: </strong> {cart.shippingAddress.address},
-                {cart.shippingAddress.city}, {cart.shippingAddress.pinCode},{' '}
-                {cart.shippingAddress.country}
+                <strong>Address: </strong>
+                <input value={shippingAddress.address} onChange={handleAddressChange} name='address'  disabled={!isAddressEditing}/>
               </p>
-              <Link
-                to="/shipping"
-                className="text-cyan-500 hover:text-cyan-600"
-              >
-                Edit
-              </Link>
+              <p className="text-gray-700 mb-4">
+                <strong>City: </strong>
+                <input value={shippingAddress.city} onChange={handleAddressChange} name='city'  disabled={!isAddressEditing}/>
+              </p>
+              <p className="text-gray-700 mb-4">
+                <strong>Pin Code: </strong>
+                <input value={shippingAddress.pinCode} onChange={handleAddressChange} name='pinCode'  disabled={!isAddressEditing}/>
+              </p>
+              <p className="text-gray-700 mb-4">
+                <strong>Country: </strong>
+                <input value={shippingAddress.country} onChange={handleAddressChange} name='country'  disabled={!isAddressEditing}/>
+              </p>
+              <p className="text-cyan-500 hover:text-cyan-600" onClick={()=>setAddressEditing(!isAddressEditing)}>
+              {isAddressEditing ? "OK" : "Edit"}
+              </p>
+           
             </div>
 
             {/* Payment Card */}
-            <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+            {/* <div className="bg-white rounded-lg shadow-md p-4 mb-4">
               <h2 className="text-lg font-semibold text-gray-800 mb-4">
                 Payment
               </h2>
@@ -137,7 +198,7 @@ export default function PlaceOrder() {
               <a href="/payment" className="text-cyan-500 hover:text-cyan-600">
                 Edit
               </a>
-            </div>
+            </div> */}
 
             {/* Order Summary Card */}
             <div className="bg-white rounded-lg shadow-md p-4 mb-4">
@@ -148,21 +209,14 @@ export default function PlaceOrder() {
                 <div className="flex justify-between">
                   <p className="text-gray-700">Items</p>
                   <p className="text-gray-700">
-                    {cart.itemsPrice.toLocaleString('en-IN')}
+                    {auction.bids[auction.bids.length-1].bidAmount.toLocaleString('en-IN')}
                   </p>
                 </div>
                 <hr />
                 <div className="flex justify-between">
                   <p className="text-gray-700">Shipping</p>
                   <p className="text-gray-700">
-                    {cart.shippingPrice.toLocaleString('en-IN')}
-                  </p>
-                </div>
-                <hr />
-                <div className="flex justify-between">
-                  <p className="text-gray-700">Tax</p>
-                  <p className="text-gray-700">
-                    {cart.taxPrice.toLocaleString('en-IN')}
+                    {100}
                   </p>
                 </div>
                 <hr />
@@ -170,13 +224,12 @@ export default function PlaceOrder() {
                   <p className="text-lg font-semibold">Order Total</p>
                   <p className="text-lg font-semibold">
                     <small>₹</small>
-                    {cart.totalPrice.toFixed(2).toLocaleString('en-IN')}
+                    {(auction.bids[auction.bids.length-1].bidAmount + 100).toLocaleString('en-IN')}
                   </p>
                 </div>
                 <button
                   className="bg-cyan-500 text-white px-4 py-2 rounded hover:bg-cyan-600 duration-200 mt-4"
                   onClick={placeOrderHandler}
-                  disabled={cart.cartItems.length === 0}
                 >
                   Checkout
                 </button>
@@ -190,40 +243,34 @@ export default function PlaceOrder() {
           <h1 className="text-2xl font-semibold text-gray-800 lg:mt-[-30px] lg:mb-4">
             Products
           </h1>
-          {cart.cartItems.map((item) => (
-            // Items Card
+
+         
             <div
               className="bg-white rounded-lg shadow-md p-4 hover:px-8 mb-2 md:mb-2  duration-500"
-              key={item._id}
+            
             >
               <div className="flex items-center space-x-4 mb-0">
                 <img
-                  src={item.image}
-                  alt={item.name}
+                  src={auction.imageUrl}
                   className="w-16 h-16 bg-gray-200 rounded-full"
                 ></img>
                 <div className="flex-grow text-center pt-4">
                   <Link
-                    to={`/products/${item.url}`}
+                    to={`/products/${auction._id}`}
                     className="text-gray-700 font-semibold"
                   >
-                    {item.name}
+                    {auction.title}
                   </Link>
-                  <p className="text-gray-500">Quantity: {item.quantity}</p>
+                  <p>{auction.description}</p>
+                 
                 </div>
                 <p className="text-gray-700 ml-auto">
-                  Total: <small>₹</small>
-                  {(item.quantity * item.price).toLocaleString('en-IN')}
+                  Final Bid: <small>₹</small>
+                  {(auction.bids[auction.bids.length-1].bidAmount).toLocaleString('en-IN')}
                 </p>
               </div>
-              <Link
-                to={`/products/${item.url}`}
-                className="text-cyan-500 hover:text-cyan-600"
-              >
-                Edit
-              </Link>
             </div>
-          ))}
+          
         </div>
       </div>
     </div>

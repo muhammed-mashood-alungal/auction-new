@@ -46,9 +46,9 @@ export default function PaymentPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!shippingAddress.address) {
-      navigate('/shipping');
-    }
+    // if (!shippingAddress.address) {
+    //   navigate('/shipping');
+    // }
   }, [shippingAddress, navigate]);
 
   const [paymentMethodName, setPaymentMethod] = useState(

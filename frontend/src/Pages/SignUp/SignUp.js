@@ -48,7 +48,7 @@ function RegisterPage() {
       });
       ctxDispatch({ type: 'USER_SIGNIN', payload: data });
       localStorage.setItem('userInfo', JSON.stringify(data));
-      navigate(redirect || '/');
+      navigate('/auction');
     } catch (err) {
       toast.error(getError(err));
     }

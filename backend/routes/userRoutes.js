@@ -78,22 +78,28 @@ userRouter.delete(
 userRouter.post(
   '/signin',
   expressAsyncHandler(async (req, res) => {
-    const user = await User.findOne({ email: req.body.email });
-    if (user) {
-      if (bcrypt.compareSync(req.body.password, user.password)) {
-        res.send({
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          isAdmin: user.isAdmin,
-          isSeller: user.isSeller,
-          seller: user.seller,
-          token: generateToken(user),
-        });
-        return;
+    try{
+      const user = await User.findOne({ email: req.body.email });
+      console.log(user)
+      if (user) {
+        if (bcrypt.compareSync(req.body.password, user.password)) {
+          res.send({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            isAdmin: user.isAdmin,
+            isSeller: user.isSeller, 
+            seller: user.seller,
+            token: generateToken(user),
+          });
+          return;
+        }
       }
+      res.status(401).send({ message: 'Invalid Email/Password' });
+    }catch(err){
+      console.log(err)
     }
-    res.status(401).send({ message: 'Invalid Email/Password' });
+   
   })
 );
 
@@ -101,6 +107,10 @@ userRouter.post(
   '/signup',
   expressAsyncHandler(async (req, res) => {
     // creating new user
+    const usr = await User.find({email : req.body.email})
+    if(usr){
+      return res.status(409).json({message : 'User with this Email is already exists'})
+    }
     const newUser = new User({
       name: req.body.name,
       email: req.body.email,
@@ -153,6 +163,25 @@ userRouter.put(
         isSeller: updatedUser.isSeller,
         token: generateToken(updatedUser),
       });
+    } else {
+      res.status(404).send({ message: 'User not found' });
+    }
+  })
+);
+
+userRouter.put(
+  '/profile/change-pass/:userId',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (user) {
+    if (bcrypt.compareSync(req.body.oldPass, user.password)) {
+      user.password = bcrypt.hashSync(req.body.newPass)
+      await user.save()
+      res.send('Success')
+    }else{
+      res.status(404).send({ message: 'Old Password not matching' });
+    }
     } else {
       res.status(404).send({ message: 'User not found' });
     }

@@ -5,7 +5,7 @@ import { getError } from '../../utils';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
-import './ProfilePage.css';
+import './ChangePassword.css';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -20,11 +20,12 @@ const reducer = (state, action) => {
   }
 };
 
-function ProfilePage() {
+function ChangePassword() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo } = state;
   const [name, setName] = useState(userInfo.name);
   const [email, setEmail] = useState(userInfo.email);
+  const [oldPass , setOldPass] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [sellerName, setSellerName] = useState(userInfo.seller?.name || '');
@@ -43,27 +44,34 @@ function ProfilePage() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-  
-    
+     const passwordRegex =
+          /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^\w\s]).{8,}$/;
+        if (!passwordRegex.test(password)) {
+          toast.error(
+            'Password must be at least 8 characters long and contain at least one uppercase,lowercase letter, and one special character.'
+          );
+          return;
+        }
+        if (password !== confirmPassword) {
+          toast.error('Passwords do not match.');
+          return;
+        }
     try {
       const { data } = await axios.put(
-        `/api/users/profile/${userId}`,
+        `/api/users/profile/change-pass/${userId}`,
         {
-          name,
-          email,
-          sellerName,
-          sellerLogo,
-          sellerDescription,
+          oldPass,
+          newPass : password
         },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
       );
-      dispatch({
-        type: 'UPDATE_SUCCESS',
-      });
-      ctxDispatch({ type: 'USER_SIGNIN', payload: data });
-      localStorage.setItem('userInfo', JSON.stringify(data));
+    //   dispatch({
+    //     type: 'UPDATE_SUCCESS',
+    //   });
+    //   ctxDispatch({ type: 'USER_SIGNIN', payload: data });
+    //   localStorage.setItem('userInfo', JSON.stringify(data));
       toast.success('Information Updated Successfully 👾');
     } catch (err) {
       dispatch({
@@ -71,7 +79,7 @@ function ProfilePage() {
       });
       toast.error(getError(err));
     }
-    signoutHandler();
+   // signoutHandler();
   };
 
   function signoutHandler() {
@@ -95,7 +103,7 @@ function ProfilePage() {
             <div className="mx-auto max-w-md">
               <div>
                 <h1 className="text-2xl font-semibold">
-                  User Profile - Edit your profile
+                 Change Password
                 </h1>
               </div>
               <div className="divide-y divide-gray-200">
@@ -106,95 +114,60 @@ function ProfilePage() {
                   <div className="relative">
                     <input
                       autoComplete="off"
-                      id="name"
-                      name="name"
+                      id="oldPass"
+                      name="oldPass"
                       type="text"
                       className="focus:border-rose-600 peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none text-base"
                       placeholder="Name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      value={oldPass}
+                      onChange={(e) => setOldPass(e.target.value)}
                       required
                     />
                     <label
                       htmlFor="name"
                       className="peer-placeholder-shown:text-gray-440 absolute left-0 -top-3.5 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
                     >
-                      Name
+                      Old Password
                     </label>
                   </div>
                   <div className="relative">
                     <input
                       autoComplete="off"
-                      id="email"
-                      name="email"
-                      type="email"
+                      id="password"
+                      name="password"
+                      type="password"
                       className="focus:border-rose-600 peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none text-base"
-                      placeholder="Email address"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="New Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       required
                     />
                     <label
                       htmlFor="email"
                       className="peer-placeholder-shown:text-gray-440 absolute left-0 -top-3.5 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
                     >
-                      Email Address
+                      New Password
                     </label>
                   </div>
-                    <div className="flex">
-                               <Link
-                                 to={`/profile/change-password`}
-                                 className="self-start  text-gray-600 font-semibold opacity-75 hover:opacity-100 transition-all duration-500"
-                               >
-                                 Change Password
-                               </Link>
-                               
-                             </div>
-                    {/* {userInfo.isSeller && (
-                      <>
-                        <h2 className="text-2xl font-semibold">
-                          Seller Profile - Edit seller profile
-                        </h2>
-                        <div className="relative pt-4">
-                          <input
-                            autoComplete="off"
-                            id="sellerName"
-                            name="sellerName"
-                            type="text"
-                            className="focus:border-rose-600 peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none text-base"
-                            placeholder="Seller Name"
-                            value={sellerName}
-                            onChange={(e) => setSellerName(e.target.value)}
-                            required
-                          />
-                          <label
-                            htmlFor="sellerName"
-                            className="peer-placeholder-shown:text-gray-440 mt-4 absolute left-0 -top-3.5 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
-                          >
-                            Seller Name
-                          </label>
-                        </div>
-                        <div className="relative">
-                          <input
-                            autoComplete="off"
-                            id="sellerDescription"
-                            name="sellerDescription"
-                            type="text"
-                            className="focus:border-rose-600 peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none text-base"
-                            placeholder="Seller Description"
-                            value={sellerDescription}
-                            onChange={(e) => setSellerDescription(e.target.value)}
-                            required
-                          />
-                          <label
-                            htmlFor="sellerDescription"
-                            className="peer-placeholder-shown:text-gray-440 absolute left-0 -top-3.5 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
-                          >
-                            Seller Description
-                          </label>
-                        </div>
-                      </>
-                    )} */}
+                  <div className="relative">
+                    <input
+                      autoComplete="off"
+                      id="password"
+                      name="password"
+                      type="password"
+                      className="focus:border-rose-600 peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none text-base"
+                      placeholder="Confirm New Password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                    />
+                    <label
+                      htmlFor="email"
+                      className="peer-placeholder-shown:text-gray-440 absolute left-0 -top-3.5 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
+                    >
+                      Confirm New Password
+                    </label>
+                  </div>
                   <div className="relative">
                     <button
                       type="submit"
@@ -203,7 +176,7 @@ function ProfilePage() {
                       Update
                     </button>
                     <div className="px-2 w-full text-sm text-center border rounded-md mt-2 bg-gray-100 text-gray-700">
-                      User will be logged out in order to apply changes.
+                      User May be logged out in order to apply changes.
                     </div>
                   </div>
                 </form>
@@ -216,4 +189,4 @@ function ProfilePage() {
   );
 }
 
-export default ProfilePage;
+export default ChangePassword;

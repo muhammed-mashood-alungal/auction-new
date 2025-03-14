@@ -39,7 +39,7 @@ mongoose
   })
   .catch((err) => {
     console.log(err.message);
-  });
+  }); 
 
 app.use('/api/upload', uploadRouter);
 // returns list of products for this api

@@ -20,7 +20,9 @@ import SellerRoute from './Components/SellerRoute/SellerRoute';
 import Auction from './Pages/Auction/Auction';
 import CreateAuction from './Pages/CreateAuction/CreateAuction';
 import AuctionDetail from './Pages/AuctionDetails/AuctionDetail';
-
+import OrderListPage from './Pages/OrderListPage/OrderListPage'
+import MyOrders from './Pages/MyOrders/MyOrders';
+import ChangePassword from './Pages/ChangePassword/ChangePassword'
 // Set the base URL for all axios requests
 axios.defaults.baseURL =
   process.env.REACT_APP_API_PROXY || 'http://localhost:5000';
@@ -90,6 +92,15 @@ function App() {
             </>
           }
         />
+         <Route
+          path="/my-orders"
+          element={
+            <>
+              <Header />
+              <MyOrders />
+            </>
+          }
+        />
 
         <Route
           path="/order/:id"
@@ -123,6 +134,18 @@ function App() {
               <Header />
               <ProtectedRoute>
                 <ProfilePage />
+              </ProtectedRoute>
+               
+            </>
+          }
+        />
+         <Route
+          path="/profile/change-password"
+          element={
+            <>
+              <Header />
+              <ProtectedRoute>
+                <ChangePassword />
               </ProtectedRoute>
                
             </>
@@ -180,7 +203,7 @@ function App() {
           }
         /> */}
 
-        {/* <Route
+        <Route
           path="/admin/orders"
           element={
             <>
@@ -191,7 +214,7 @@ function App() {
             </>
           }
           exact
-        /> */}
+        />
 
         <Route
           path="/admin/users"

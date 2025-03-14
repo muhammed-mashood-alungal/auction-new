@@ -63,6 +63,7 @@ const CreateAuction = () => {
           startingBid,
           imageUrl,
           endDate,
+          seller : userInfo._id
         },
         {
           headers: {
@@ -189,16 +190,17 @@ const CreateAuction = () => {
                   </div>
                 </div>
                 <div className="mb-4">
-                  <label
+                  {/* <label
                     htmlFor="imageUrl"
                     className="block font-medium text-gray-700 mb-1"
                   >
                     Image URL
-                  </label>
+                  </label> */}
                   <input
                     type="text"
                     id="imageUrl"
                     value={imageUrl}
+                    hidden
                     onChange={(e) => setImageUrl(e.target.value)}
                     className="w-full border-gray-300 rounded-lg px-4 py-2 bg-gray-100 focus:outline-none focus:shadow-outline"
                   />

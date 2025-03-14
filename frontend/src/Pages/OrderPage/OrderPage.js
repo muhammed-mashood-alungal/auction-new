@@ -43,7 +43,7 @@ const reducer = (state, action) => {
     default:
       return state;
   }
-};
+}
 
 export default function OrderPage() {
   const { state } = useContext(Store);
@@ -219,45 +219,46 @@ export default function OrderPage() {
               <p className="text-lg md:text-xl light:text-white font-semibold leading-6 xl:leading-5 text-gray-800">
                 Customer’s Cart
               </p>
-              {order.orderItems.map((item) => (
+              {/* {order?.orderItems?.map((item) => ( */}
                 <div
                   className="mt-4 md:mt-6 flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 xl:space-x-8 w-full"
-                  key={item._id}
+                  key={order.auctionId._id}
                 >
                   <div className="pb-4 md:pb-8 w-20">
                     <img
                       className="w-full hidden md:block"
-                      src={item.image}
-                      alt={item.name}
+                      src={order.auctionId.imageUrl}
+                      alt={order.auctionId.title}
                     />
                     <img
                       className="w-full md:hidden"
-                      src={item.image}
-                      alt={item.name}
+                      src={order.auctionId.imageUrl}
+                      alt={order.auctionId.title}
                     />
                   </div>
                   <div className="border-b border-gray-200 md:flex-row flex-col flex justify-between items-start w-full pb-8 space-y-4 md:space-y-0">
-                    <div className="w-full flex flex-col justify-start items-start space-y-8">
-                      <h3 className="text-xl light:text-white font-semibold leading-6 text-gray-800">
-                        <Link to={`/products/${item.url}`}>{item.name}</Link>
+                    <div className="w-full flex flex-col justify-start items-start space-y-8 ">
+                      <h3 className="text-xl light:text-white font-semibold leading-6 text-gray-800 ">
+                       
+                        <Link to={`/auctions/${order.auctionId._id}`}> {order.auctionId.title}</Link>
+                       
                       </h3>
                     </div>
                     <div className="flex justify-between space-x-8 items-start w-full">
                       <p className="text-base light:text-white xl:text-lg leading-6">
                         <small>₹</small>
-                        {item.price}
+                        {order.auctionId.currentBid}
                       </p>
-                      <p className="text-base light:text-white xl:text-lg leading-6 text-gray-800">
-                        {item.quantity}
-                      </p>
-                      <p className="text-base light:text-white xl:text-lg font-semibold leading-6 text-gray-800">
-                        <small>₹</small>
-                        {item.quantity * item.price}
+                    </div>
+                    <div className="flex justify-between space-x-8 items-start w-full">
+                      <p className="text-base light:text-white xl:text-lg leading-6">
+                        <small>Seller : {order?.sellerId?.name || 'John Doe'}</small>
+  
                       </p>
                     </div>
                   </div>
                 </div>
-              ))}
+             {/* // ))} */}
             </div>
             <div className="flex justify-center md:flex-row flex-col items-stretch w-full space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
               <div className="flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 light:bg-gray-800 space-y-6">
@@ -271,18 +272,10 @@ export default function OrderPage() {
                     </p>
                     <p className="text-base light:text-gray-300 leading-4 text-gray-600">
                       <small>₹</small>
-                      {order.itemsPrice.toFixed(2)}
+                      {order.itemPrice.toFixed(2)}
                     </p>
                   </div>
-                  <div className="flex justify-between items-center w-full">
-                    <p className="text-base light:text-white leading-4 text-gray-800">
-                      Tax
-                    </p>
-                    <p className="text-base light:text-gray-300 leading-4 text-gray-600">
-                      <small>₹</small>
-                      {order.taxPrice.toFixed(2)}
-                    </p>
-                  </div>
+                
                   <div className="flex justify-between items-center w-full">
                     <p className="text-base light:text-white leading-4 text-gray-800">
                       Shipping
@@ -292,17 +285,15 @@ export default function OrderPage() {
                       {order.shippingPrice.toFixed(2)}
                     </p>
                   </div>
-                  <p className="text-xs light:text-white leading-4 text-center text-gray-300">
-                    Paypal does not accept payments in INR
-                  </p>
+                 
                 </div>
                 <div className="flex justify-between items-center w-full">
                   <p className="text-base light:text-white font-semibold leading-4 text-gray-800">
-                    Total in USD
+                    Total in Rupee
                   </p>
                   <p className="text-base light:text-gray-300 font-semibold leading-4 text-gray-600">
-                    <small>$</small>
-                    {totalPriceUSD.toFixed(2)}
+                    <small>₹</small>
+                    {order.totalPrice.toFixed(2)}
                   </p>
                 </div>
                 {!order.isPaid && (
@@ -358,7 +349,7 @@ export default function OrderPage() {
                     </div>
                   </div>
                   <p className="text-lg font-semibold leading-6 light:text-white text-gray-800">
-                    {order.paymentMethod}
+                    Cash On Delivery
                   </p>
                 </div>
                 <div className="w-full flex justify-center items-center">
@@ -381,7 +372,7 @@ export default function OrderPage() {
                           hour12: true,
                           timeZoneName: 'short',
                         }).format(new Date(order.paidAt))}`
-                      : 'NOT PAID'}
+                      : 'Payment Pending'}
                   </div>
                 </div>
               </div>
@@ -395,7 +386,8 @@ export default function OrderPage() {
               <div className="flex flex-col justify-start items-start flex-shrink-0">
                 <div className="flex justify-center w-full md:justify-start items-center space-x-4 py-8 border-b border-gray-200">
                   <img
-                    src="https://i.ibb.co/5TSg7f6/Rectangle-18.png"
+                  className="w-8 h-8 rounded-full hover:scale-110 duration-200"
+                    src="https://i.pravatar.cc/150?img=3"
                     alt="avatar"
                   />
                   <div className="flex justify-start items-start flex-col space-y-2">

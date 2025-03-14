@@ -4,6 +4,7 @@ import Product from '../../Components/Product/Product';
 import { Helmet } from 'react-helmet-async';
 import Loading from '../../Components/Loading/Loading';
 import ErrorPage from '../../Components/ErrorPage/ErrorPage';
+import { useNavigate } from 'react-router-dom';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -24,20 +25,10 @@ function Home() {
     loading: true,
     error: '',
   });
-  // const [products, setProducts] = useState([]);
+  const navigate = useNavigate()
   useEffect(() => {
-    const fetchData = async () => {
-      dispatch({ type: 'FETCH_REQUEST' });
-      try {
-        const result = await axios.get('/api/products');
-        dispatch({ type: 'FETCH_SUCCESS', payload: result.data });
-      } catch (err) {
-        dispatch({ type: 'FETCH_FAIL', payload: err.message });
-      }
-      // setProducts(result.data);
-    };
-    fetchData();
-  }, []); // [] cause we use useEffect only once
+    navigate('/auction')
+  }, []);
 
   return (
     <div className="home__component">

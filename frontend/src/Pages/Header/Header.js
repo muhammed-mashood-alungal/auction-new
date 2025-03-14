@@ -83,43 +83,14 @@ export default function Navbar() {
       <header className="text-gray-600 body-font shadow-lg">
         <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
           <Link
-            to="/"
+            to="/auction"
             className="flex order-first lg:order-none lg:w-1/5 title-font font-medium items-center text-gray-900 mb-0 md:mb-0"
           >
             <span className="ml-3 text-3xl font-bold">
               <span className="text-cyan-500">Ecom</span>Bidding
             </span>
           </Link>
-          <div className="lg:w-2/5 inline-flex lg:justify-end ml-5 lg:ml-0">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search"
-                className="bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 mb-4 md:mt-0 md:mb-0 sm:mb-4 lg:w-80"
-                onChange={(event) => handleTextChange(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter') {
-                    searchClicked();
-                  }
-                }}
-                value={text}
-              />
-              <svg
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                className="absolute top-0 right-0 h-full w-4 text-gray-500 mr-3"
-                viewBox="0 0 24 24"
-                cursor="pointer"
-                onClick={searchClicked}
-              >
-                <path d="M22 22L15.5 15.5M15.5 15.5C17.9853 13.0152 17.9853 8.98481 15.5 6.5C13.0152 3.98528 8.98481 3.98528 6.5 6.5C3.98528 8.98481 3.98528 13.0152 6.5 15.5C8.98481 17.9853 13.0152 17.9853 15.5 15.5Z"></path>
-              </svg>
-            </div>
-          </div>
-
+        
           <nav className="flex lg:w-2/5 flex-wrap lg:justify-end items-center text-base md:ml-auto">
             <Link to="/auction" className="relative inline-flex items-center">
               <span className="relative inline-flex items-center rounded px-2.5 py-1.5 font-medium">
@@ -128,7 +99,7 @@ export default function Navbar() {
                 </span>
               </span>
             </Link>
-
+{/* 
             {userInfo && userInfo.isSeller && (
               <div className="mr-4">
                 <button
@@ -164,7 +135,7 @@ export default function Navbar() {
                   </div>
                 )}
               </div>
-            )}
+            )} */}
 
             {userInfo && userInfo.isAdmin && (
               <div className="hover:text-gray-900 mr-6">
@@ -198,6 +169,13 @@ export default function Navbar() {
                       >
                         Manage Users
                       </Link>
+                      <Link
+                        to="/admin/orders"
+                        className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                      >
+                        Manage Orders
+                      </Link>
+                     
                     </div>
                   </div>
                 )}
@@ -239,6 +217,14 @@ export default function Navbar() {
                           className="block px-4 py-2 hover:bg-gray-100"
                         >
                           Profile
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/my-orders"
+                          className="block px-4 py-2 hover:bg-gray-100"
+                        >
+                          My Orders
                         </Link>
                       </li>
                     </ul>
