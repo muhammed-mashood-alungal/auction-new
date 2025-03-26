@@ -92,6 +92,13 @@ export default function Navbar() {
           </Link>
         
           <nav className="flex lg:w-2/5 flex-wrap lg:justify-end items-center text-base md:ml-auto">
+            <Link to="/about" className="relative inline-flex items-center">
+              <span className="relative inline-flex items-center rounded px-2.5 py-1.5 font-medium">
+                <span className="ml-1.5 text-base text-gray-600 hover:text-gray-900">
+                  About
+                </span>
+              </span>
+            </Link>
             <Link to="/auction" className="relative inline-flex items-center">
               <span className="relative inline-flex items-center rounded px-2.5 py-1.5 font-medium">
                 <span className="ml-1.5 text-base text-gray-600 hover:text-gray-900">

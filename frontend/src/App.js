@@ -23,6 +23,7 @@ import AuctionDetail from './Pages/AuctionDetails/AuctionDetail';
 import OrderListPage from './Pages/OrderListPage/OrderListPage'
 import MyOrders from './Pages/MyOrders/MyOrders';
 import ChangePassword from './Pages/ChangePassword/ChangePassword'
+import AboutPage from './Pages/About/About';
 // Set the base URL for all axios requests
 axios.defaults.baseURL =
   process.env.REACT_APP_API_PROXY || 'http://localhost:5000';
@@ -63,6 +64,7 @@ function App() {
         /> */}
         <Route path="/signin" element={<LoginPage />} />
         <Route path="/signup" element={<RegisterPage />} />
+        <Route path="/about" element={<AboutPage />} />
 
         {/* <Route
           path="/shipping"

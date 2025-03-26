@@ -45,7 +45,8 @@ function RegisterPage() {
         name,
         email,
         password,
-      });
+      })
+      console.log(data)
       ctxDispatch({ type: 'USER_SIGNIN', payload: data });
       localStorage.setItem('userInfo', JSON.stringify(data));
       navigate('/auction');
@@ -63,6 +64,9 @@ function RegisterPage() {
   return (
     <div className="relative">
       <ToastContainer position="bottom-center" limit={1} />
+      <span className="ml-14 mt-9 text-3xl font-bold fixed">
+              <span className="text-cyan-500">Ecom</span>Bidding
+            </span>
       <Helmet>
         <title>Sign Up-EcomBidding</title>
       </Helmet>

@@ -47,6 +47,9 @@ function LoginPage() {
   return (
     <div className="relative">
       <ToastContainer position="bottom-center" limit={1} />
+      <span className="ml-14 mt-9 text-3xl font-bold fixed">
+              <span className="text-cyan-500">Ecom</span>Bidding
+            </span>
       <Helmet>
         <title>Sign In-Bidding</title>
       </Helmet>
@@ -75,7 +78,7 @@ function LoginPage() {
         >
           <img src={avatar} className="w-32" alt="avatar" />
           <h2 className="my-8 font-display font-bold text-3xl text-gray-700 text-center">
-            Welcome to you
+            Welcomes you
           </h2>
           <div className="relative font-sans">
             <i className="fa fa-user absolute text-primarycolor"></i>

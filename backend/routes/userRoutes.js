@@ -106,8 +106,9 @@ userRouter.post(
 userRouter.post(
   '/signup',
   expressAsyncHandler(async (req, res) => {
-    // creating new user
-    const usr = await User.find({email : req.body.email})
+    
+    const usr = await User.findOne({email : req.body.email})
+   
     if(usr){
       return res.status(409).json({message : 'User with this Email is already exists'})
     }
